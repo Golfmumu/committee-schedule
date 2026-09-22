@@ -1,0 +1,44 @@
+rules_version = '2';
+
+// Paste this whole file into Firebase console → Firestore Database → Rules,
+// then click "Publish". No login in this app, so these rules are the ONLY
+// thing enforcing the "2 seats per slot" limit and the data shape — the
+// client code never has to be trusted.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // One doc per taken SEAT, id = "<date>_<hour>_<seat>", e.g.
+    // "2026-09-24_9_1" and "2026-09-24_9_2" are the two seats of the
+    // 9.00-10.00 slot on 2026-09-24. A slot is full once both ids exist.
+    // Because Firestore only lets a create succeed when the id is free,
+    // this blocks a 3rd person from ever taking a slot — even if two
+    // people submit at the exact same instant.
+    match /duty_signups/{seatId} {
+      allow read: if true;
+
+      allow create: if
+        // the seat isn't already taken
+        !exists(/databases/$(database)/documents/duty_signups/$(seatId)) &&
+        // id must look like "YYYY-MM-DD_HOUR_SEAT" (seat 1 or 2)
+        seatId.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}_[0-9]{1,2}_[12]$') &&
+        request.resource.data.keys().hasOnly(['date', 'hour', 'firstName', 'lastName', 'createdAt']) &&
+        request.resource.data.date is string &&
+        request.resource.data.hour is int &&
+        request.resource.data.hour in [9, 10, 11, 13, 14, 15] &&
+        request.resource.data.firstName is string &&
+        request.resource.data.firstName.size() > 0 &&
+        request.resource.data.firstName.size() <= 60 &&
+        request.resource.data.lastName is string &&
+        request.resource.data.lastName.size() > 0 &&
+        request.resource.data.lastName.size() <= 60 &&
+        request.resource.data.createdAt == request.time;
+
+      // Anyone with the link can cancel any seat (there is no login to tell
+      // people apart). Fine for a small trusted committee; say so if you'd
+      // rather lock this down later.
+      allow delete: if true;
+
+      allow update: if false;
+    }
+  }
+}

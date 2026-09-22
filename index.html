@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ลงชื่อปฏิบัติงานคณะกรรมการ</title>
+<meta name="description" content="เลือกวันและเวลาที่สะดวกมาปฏิบัติงาน ช่วงละ 2 คน">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;600;700&family=Noto+Serif+Thai:wght@700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main>
+  <header>
+    <div>
+      <p class="eyebrow">คณะกรรมการ · ตารางปฏิบัติงาน</p>
+      <h1>เลือกวันและเวลาที่สะดวกมาปฏิบัติงาน</h1>
+      <p class="sub">แต่ละช่วงเวลารับได้ 2 คน · กรอกชื่อ-นามสกุล แล้วกด “ลงชื่อ” ในช่องที่ต้องการ</p>
+    </div>
+    <div class="count">
+      <p class="big"><span id="filled-count">0</span><span class="of"> / <span id="total-count">0</span></span></p>
+      <p class="label">ที่นั่งที่มีผู้ลงชื่อแล้ว</p>
+    </div>
+  </header>
+
+  <div id="setup-notice" class="setup-notice" hidden>
+    ยังไม่ได้ตั้งค่า Firebase — แก้ค่าใน <code>firebase-config.js</code> ก่อน (ดูวิธีใน README.md)
+  </div>
+
+  <form class="name-bar" id="name-form">
+    <div class="field">
+      <label for="first">ชื่อ</label>
+      <input id="first" name="first" type="text" autocomplete="given-name" maxlength="60">
+    </div>
+    <div class="field">
+      <label for="last">นามสกุล</label>
+      <input id="last" name="last" type="text" autocomplete="family-name" maxlength="60">
+    </div>
+    <div id="message" role="status" aria-live="polite"></div>
+  </form>
+
+  <div class="board-wrap">
+    <table id="board">
+      <thead>
+        <tr id="header-row"><th>วันที่</th></tr>
+      </thead>
+      <tbody id="board-body"></tbody>
+    </table>
+  </div>
+</main>
+
+<script type="module" src="app.js"></script>
+</body>
+</html>
