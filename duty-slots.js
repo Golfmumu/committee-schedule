@@ -2,8 +2,6 @@
 // Edit here to change the sheet — the Firestore rules accept any date
 // string and any hour in HOURS, so no other file needs to change.
 export const DATES = [
-  "2026-09-24",
-  "2026-09-25",
   "2026-09-28",
   "2026-09-29",
   "2026-09-30",
